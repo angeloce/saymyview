@@ -1,13 +1,8 @@
+#coding:utf-8
 
-from painter.base import RequestHandler
+from painter.utils.webutil import RequestHandler
 
 class IndexHandler(RequestHandler):
+
     def get(self):
         self.render('base.html')
-
-patterns = [
-    (r'/', IndexHandler)
-
-
-
-]
