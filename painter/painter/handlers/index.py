@@ -6,3 +6,4 @@ class IndexHandler(RequestHandler):
 
     def get(self):
         self.render('base.html')
+

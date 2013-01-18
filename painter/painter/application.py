@@ -13,7 +13,6 @@ import pymongo
 from painter.conf import settings
 from painter import urls
 
-print settings
 class Application(object):
 
     def __init__(self):

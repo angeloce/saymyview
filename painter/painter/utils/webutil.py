@@ -10,7 +10,7 @@ class RequestHandler(BaseRequestHandler):
     template_env = None
     def __init__(self, *args, **kwargs):
         BaseRequestHandler.__init__(self, *args, **kwargs)
-        print self.application.settings
+        self.db = self.application.db
         if not self.template_env:
             self.template_env = Environment(loader = FileSystemLoader(self.application.settings['template_path']))
 
