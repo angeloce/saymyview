@@ -10,10 +10,9 @@ class RequestHandler(BaseRequestHandler):
     template_env = None
     def __init__(self, *args, **kwargs):
         BaseRequestHandler.__init__(self, *args, **kwargs)
-        self.db = self.application.db
         if not self.template_env:
             self.template_env = Environment(loader = FileSystemLoader(self.application.settings['template_path']))
-
+    
     def render_string(self, template_name, **kwargs):
         template = self.template_env.get_template(template_name)
         namespace = self.get_template_namespace()

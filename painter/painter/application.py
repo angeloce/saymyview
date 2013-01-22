@@ -8,8 +8,6 @@ import tornado.autoreload
 import tornado.ioloop
 import tornado.web
 
-import pymongo
-
 from painter.conf import settings
 from painter import urls
 
@@ -17,10 +15,6 @@ class Application(object):
 
     def __init__(self):
         self.application = tornado.web.Application(urls.patterns, **settings)
-
-        self.db = pymongo.MongoClient()
-        
-        self.application.db = self.db
 
     def run(self):
         self.application.listen(8888)

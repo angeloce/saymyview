@@ -1,6 +1,6 @@
 #coding:utf-8
 
-from painter.utils.webutil import RequestHandler
+from painter.utils.web import RequestHandler
 
 class IndexHandler(RequestHandler):
 
