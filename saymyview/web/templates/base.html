@@ -1,0 +1,30 @@
+{%extends "layout.html" %}
+
+{%block extra_head%}
+<style type="text/css">
+    body {background-image: url(/static/img/blackorchid.png);}
+    #board {width:1000px;margin:0 auto;background-color:#FFD6A1;}
+    #board, #paper {-webkit-box-shadow: 1px 1px 8px #909090;}
+    #paper {background-color:#fff;}
+
+</style>
+<script src="/static/js/painter.js"></script>
+{%endblock%}
+
+{%block content%}
+<div>
+    <div id="board">
+        <div id="paper_wrapper">
+            <canvas id="paper" width="728" height="518"></canvas>
+        </div>
+        <div style="float:left">
+            <div id="ink_bottle">
+            </div>
+            <div id="tools">
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+
+{%endblock%}
