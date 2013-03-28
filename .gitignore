@@ -16,6 +16,9 @@ local.properties
 .settings/
 .loadpath
 
+#Pycharm
+.idea
+
 # External tool builders
 .externalToolBuilders/
 
