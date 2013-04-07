@@ -2,7 +2,7 @@
 
 
 patterns = [
-    (r'/', 'base.RequestHandler')
+    (r'/', 'index.IndexHandler')
 
 ]
 
@@ -22,7 +22,7 @@ def meet_convetion(patterns, handler_prefix=None):
             handler = import_object(handler)
             pattern = list(pattern)
             pattern[1] = handler
-        new_patterns.append(pattern)
+        new_patterns.append(tuple(pattern))
     return new_patterns
 
 patterns = meet_convetion(patterns, "saymyview.web.handlers.")
