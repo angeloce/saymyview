@@ -6,12 +6,12 @@ import tornado.autoreload
 import tornado.ioloop
 import tornado.web
 
-from conf import settings
-import urls
-
+from saymyview.web.conf import settings
+from saymyview.web import urls
+from saymyview.web.models.base import database
 
 application = tornado.web.Application(urls.patterns, **settings)
-
+application.database = database
 
 if __name__ == "__main__":
     application.listen(8888)

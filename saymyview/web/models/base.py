@@ -15,9 +15,17 @@ _BaseModel = declarative_base()
 class BaseDataBaseModel(object):
     id = Column(Integer, primary_key=True)  # all of tables have id
 
+    def __init__(self, **kwargs):
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+
     @declared_attr
     def __table_args__(self):
         return {'mysql_engine': 'InnoDB'}
+
+    @classmethod
+    def create(cls, **kwargs):
+        return database.session.add(cls(**kwargs))
 
 
 class DataBase(object):
@@ -25,9 +33,12 @@ class DataBase(object):
         self._database = database
 
     @property
-    def Session(self):
-        session = sessionmaker(bind=self.engine)
-        return scoped_session(session)
+    def session(self):
+        if not hasattr(self, '_session'):
+            Session = sessionmaker(bind=self.engine)
+            Session = scoped_session(Session)
+            self._session = Session
+        return self._session
 
     @property
     def engine(self):
@@ -39,10 +50,12 @@ class DataBase(object):
     def Model(self):
         if not hasattr(self, '_model'):
             self._model = declarative_base(cls=BaseDataBaseModel, name='BaseDataBaseModel')
+            self._model.query = self.session.query_property()
+            self._model.db = self
         return self._model
 
     def create_db(self):
-        return self.Model.metadata.create_all(self.engine)
+        return self.Model.metadata.create_all(bind=self.engine)
 
 
 def make_engine_url(**configs):
@@ -65,4 +78,3 @@ def make_engine_url(**configs):
 
 
 database = DataBase(make_engine_url(**vars(db)))
-

@@ -2,8 +2,9 @@
 
 
 patterns = [
-    (r'/', 'index.IndexHandler')
-
+    (r'/', 'index.IndexHandler'),
+    (r'/login', 'index.LoginHandler'),
+    (r'/logout', 'index.LogoutHandler'),
 ]
 
 

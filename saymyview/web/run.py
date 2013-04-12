@@ -12,7 +12,6 @@ import tornado.ioloop
 import tornado.autoreload
 from application import application
 
-
 if __name__ == '__main__':
     application.listen(8888)
     ioloop = tornado.ioloop.IOLoop.instance()

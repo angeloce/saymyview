@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+
+{% block body %}
+
+    <div class="container_12">
+        <form method="post">
+            <label>
+                User: <input type="text" name="u" value="{{username}}" />
+            </label>
+            <label>
+                Password: <input type="password" name="p" value="{{password}}" />
+            </label>
+            <input type="submit" value="OK" />
+        </form>
+        <div id="error_message">
+            {% if error_message %}
+            <p style="color:red;">
+                {{error_message}}
+            </p>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}
