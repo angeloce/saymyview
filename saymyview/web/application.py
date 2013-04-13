@@ -12,10 +12,3 @@ from saymyview.web.models.base import database
 
 application = tornado.web.Application(urls.patterns, **settings)
 application.database = database
-
-if __name__ == "__main__":
-    application.listen(8888)
-    ioloop = tornado.ioloop.IOLoop.instance()
-
-    tornado.autoreload.start(ioloop)
-    ioloop.start()

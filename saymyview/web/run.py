@@ -8,13 +8,17 @@ except ImportError:
     sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 
+import sys
 import tornado.ioloop
 import tornado.autoreload
 from application import application
 
 if __name__ == '__main__':
-    application.listen(8888)
+    try:
+        port = int(sys.path[1])
+    except:
+        port = 8000
+    
+    application.listen(port)
     ioloop = tornado.ioloop.IOLoop.instance()
-
-    tornado.autoreload.start(ioloop)
     ioloop.start()
