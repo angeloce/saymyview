@@ -7,7 +7,7 @@ from sqlalchemy.ext.declarative import declarative_base, declared_attr
 from sqlalchemy import Column, Integer
 from sqlalchemy.orm import sessionmaker, scoped_session
 
-from saymyview.web.conf import db
+from saymyview.web.conf import local
 
 _BaseModel = declarative_base()
 
@@ -64,7 +64,7 @@ def make_engine_url(**configs):
     db_port = str(configs.get('db_port', ''))
     db_username = configs.get('db_username')
     db_password = configs.get('db_password', '')
-    db_name = configs.get('db_name')
+    db_name = configs.get('db_name', '')
 
     url = db_engine + '://'
     if db_username or db_password:
@@ -77,4 +77,4 @@ def make_engine_url(**configs):
     return url
 
 
-database = DataBase(make_engine_url(**vars(db)))
+database = DataBase(make_engine_url(**vars(local)))
