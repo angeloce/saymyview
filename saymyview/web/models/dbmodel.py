@@ -55,9 +55,3 @@ class WebPageScript(database.Model):
     url = Column(String(255))
     script = Column(Text)
     update_date = Column(DateTime)
-
-
-if __name__ == '__main__':
-    import sys
-    if len(sys.argv) > 1 and sys.argv[1] == 'create':
-        database.create_db()

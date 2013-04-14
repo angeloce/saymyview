@@ -2,13 +2,15 @@
 
 
 import tornado
-import tornado.autoreload
-import tornado.ioloop
 import tornado.web
 
 from saymyview.web.conf import settings
 from saymyview.web import urls
 from saymyview.web.models.base import database
 
+
 application = tornado.web.Application(urls.patterns, **settings)
 application.database = database
+
+
+
