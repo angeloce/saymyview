@@ -9,12 +9,13 @@ from application import application
 
 
 def main():
-    method = sys.path[1]
+    method = sys.argv[1]
     if method == 'run':
-        if len(sys.path) > 2:
-            port = int(sys.path[2])
+        if len(sys.argv) > 2:
+            port = int(sys.argv[2])
         else:
             port = 8000
+        print port
         application.listen(port)
         ioloop = tornado.ioloop.IOLoop.instance()
         ioloop.start()

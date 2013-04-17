@@ -1,8 +1,18 @@
 #coding:utf-8
 
+import json
 from base import database
 from sqlalchemy import Column, Integer, String, DateTime, Text
 
+
+from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
+
+metadata = MetaData()
+users = Table('users', metadata,
+Column('id', Integer, primary_key=True),
+Column('name', String),
+Column('fullname', String),
+)
 
 
 def _make_password(username, password):
@@ -55,3 +65,34 @@ class WebPageScript(database.Model):
     url = Column(String(255))
     script = Column(Text)
     update_date = Column(DateTime)
+
+
+class UserSession(database.Model):
+    __tablename__ = "user_session"
+
+    session_id = Column(String(32))
+    session_data = Column(Text)
+    expires = Column(DateTime)
+
+    @property
+    def session_obj(self):
+        if hasattr(self, '_session_obj'):
+            try:
+                self._session_obj = json.loads(self.session_data)
+            except Exception, e:
+                self._session_obj = {}
+        return self._session_obj
+
+    def get(self, name, default=None):
+        return self.session_obj.get(name, default)
+
+    def set(self, name, value):
+        if value is None:
+            del self.session_obj[name]
+        else:
+            self.session_obj[name] = value
+
+    def save(self):
+        self.session_data = json.dumps(self.session_obj)
+        self.save()
+
