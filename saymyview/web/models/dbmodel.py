@@ -1,18 +1,8 @@
 #coding:utf-8
 
 import json
-from base import database
+from base import BaseModel
 from sqlalchemy import Column, Integer, String, DateTime, Text
-
-
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
-
-metadata = MetaData()
-users = Table('users', metadata,
-Column('id', Integer, primary_key=True),
-Column('name', String),
-Column('fullname', String),
-)
 
 
 def _make_password(username, password):
@@ -24,18 +14,13 @@ def _make_password(username, password):
     return sh2.hexdigest()
 
 
-class User(database.Model):
+class User(BaseModel):
     __tablename__ = 'user'
 
     username = Column(String(20))
     nickname = Column(String(20))
     password = Column(String(128))
     wherefrom = Column(Integer)
-
-    def __init__(self, account, password):
-        self.username = account
-        self.nickname = account
-        self.set_password(password)
 
     def is_same_password(self, raw_password):
         return _make_password(self.username, raw_password) == self.password
@@ -51,7 +36,7 @@ class User(database.Model):
         return self.username or ""
 
 
-class WebPage(database.Model):
+class WebPage(BaseModel):
     __tablename__ = "web_page"
 
     url = Column(String(255))
@@ -59,7 +44,7 @@ class WebPage(database.Model):
     create_date = Column(DateTime)
 
 
-class WebPageScript(database.Model):
+class WebPageScript(BaseModel):
     __tablename__ = "web_page_script"
 
     url = Column(String(255))
@@ -67,8 +52,8 @@ class WebPageScript(database.Model):
     update_date = Column(DateTime)
 
 
-class UserSession(database.Model):
-    __tablename__ = "user_session"
+class RequestSession(BaseModel):
+    __tablename__ = "request_session"
 
     session_id = Column(String(32))
     session_data = Column(Text)

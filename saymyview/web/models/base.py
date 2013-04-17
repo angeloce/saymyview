@@ -2,58 +2,46 @@
 
 
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base, declared_attr
+
+from sqlalchemy import select
 from sqlalchemy import Column, Integer
-from sqlalchemy.orm import sessionmaker, scoped_session
-
-from saymyview.web.conf import local as local_settings
 
 
-class BaseDataBaseModel(object):
-    id = Column(Integer, primary_key=True)  # all of tables have id
+class BaseModel(object):
 
-    def __init__(self, **kwargs):
-        for k, v in kwargs.items():
-            setattr(self, k, v)
+    def __init__(self, connection):
+        self.connection = connection
 
-    @declared_attr
-    def __table_args__(self):
-        return {'mysql_engine': 'InnoDB'}
+    def execute(self, *args, **kw):
+        return self.connection.execute(*args, **kw)
 
-    @classmethod
-    def create(cls, **kwargs):
-        return database.session.add(cls(**kwargs))
+    def select(self, columns, *args, **kwargs):
+        if not isinstance(columns, (tuple, list)):
+            columns = [columns]
+        return select(columns, *args, **kwargs)
 
 
 class DataBase(object):
-    def __init__(self, settings=None):
-        self._settings = settings or {}
-
-    @property
-    def session(self):
-        if not hasattr(self, '_session'):
-            Session = sessionmaker(bind=self.engine)
-            Session = scoped_session(Session)
-            self._session = Session
-        return self._session
+    def __init__(self, **settings):
+        self._settings = settings
 
     @property
     def engine(self):
         if not hasattr(self, '_engine'):
-            self._engine = create_engine(make_engine_url(self._settings),
-                echo=self._settings.get('debug', False))
+            self._engine = create_engine(make_engine_url(self._settings), echo=False)
         return self._engine
 
     @property
-    def Model(self):
-        if not hasattr(self, '_model'):
-            self._model = declarative_base(cls=BaseDataBaseModel, name='BaseDataBaseModel')
-            self._model.query = self.session.query_property()
-            self._model.db = self
-        return self._model
+    def connection(self):
+        if not hasattr(self, '_connection'):
+            self.connect()
+        if self._connection.closed:
+            self.connect()
+        return self._connection
 
-    def create_db(self):
-        return self.Model.metadata.create_all(bind=self.engine)
+    def connect(self):
+        self._connection = self._engine.connect()
+        return self._connection
 
 
 def make_engine_url(configs):
@@ -73,6 +61,3 @@ def make_engine_url(configs):
     if db_name:
         url += '/' + db_name
     return url
-
-
-database = DataBase(vars(local_settings))
