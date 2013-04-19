@@ -2,32 +2,24 @@
 
 
 from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, scoped_session
 
-from sqlalchemy import select
-from sqlalchemy import Column, Integer
 
-
-class BaseModel(object):
-
-    def __init__(self, connection):
-        self.connection = connection
-
-    def execute(self, *args, **kw):
-        return self.connection.execute(*args, **kw)
-
-    def select(self, columns, *args, **kwargs):
-        if not isinstance(columns, (tuple, list)):
-            columns = [columns]
-        return select(columns, *args, **kwargs)
+session = sessionmaker()
+session = scoped_session(session)
 
 
 class DataBase(object):
-    def __init__(self, **settings):
+    def __init__(self, settings):
         self._settings = settings
+        self.session = session
+        self.session.configure(bind=self.engine)
 
     @property
     def engine(self):
         if not hasattr(self, '_engine'):
+            enable_echo = self._settings.get('debug', False)
             self._engine = create_engine(make_engine_url(self._settings), echo=False)
         return self._engine
 
@@ -40,9 +32,41 @@ class DataBase(object):
         return self._connection
 
     def connect(self):
-        self._connection = self._engine.connect()
+        self._connection = self.engine.connect()
         return self._connection
 
+    def execute(self, *args, **kwargs):
+        return self.connection.execute(*args, **kwargs)
+
+    def __getattr__(self, name):
+        return getattr(self.connection, name)
+
+
+class Model(object):
+
+    session = session
+
+    @classmethod
+    def select(cls):
+        return cls.session.query(cls)
+
+    def update(self, **kwargs):
+        for name, value in kwargs.items():
+            setattr(self, name, value)
+        self.session.commit()
+        return self
+
+    def insert(self):
+        self.session.add(self)
+        self.session.commit()
+        return self
+
+    def delete(self):
+        self.session.delete(self)
+        self.session.commit()
+
+
+BaseModel = declarative_base(cls=Model)
 
 def make_engine_url(configs):
     db_engine = configs.get('db_engine', 'mysql')

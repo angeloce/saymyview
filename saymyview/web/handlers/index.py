@@ -2,7 +2,7 @@
 
 
 from saymyview.web.handlers.base import RequestHandler
-from saymyview.web.models import User
+from saymyview.web.models.user import User
 
 
 class IndexHandler(RequestHandler):
@@ -19,11 +19,13 @@ class LoginHandler(RequestHandler):
     def post(self):
         username = self.get_argument('u', '')
         password = self.get_argument('p', '')
-
         if username:
-            user = User.query.filter_by(username=username).first()
-            if user and user.is_same_password(password):
-                self.set_current_user(user)
+            user = User.select().filter_by(username=username).first()
+            if user and user.check_password(password):
+                session = self.create_user_session(user)
+                session.set(user=username)
+                print 'user', username
+                print session.session_data, session.session_dict
                 return self.redirect('/')
 
         # login error
@@ -33,7 +35,8 @@ class LoginHandler(RequestHandler):
 class LogoutHandler(RequestHandler):
 
     def get(self):
-        self.set_current_user(None)
+        if self.session:
+            self.session.set(user=None)
         self.redirect('/')
 
     post = get

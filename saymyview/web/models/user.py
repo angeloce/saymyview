@@ -1,8 +1,8 @@
 #coding:utf-8
 
 
-from base import BaseModel
-from tables import *
+from saymyview.web.models.base import BaseModel
+from saymyview.web.models.tables import user_table
 
 
 def _make_password(username, password):
@@ -14,11 +14,20 @@ def _make_password(username, password):
     return sh2.hexdigest()
 
 
+
 class User(BaseModel):
-    def check_password(self, username, user_password, check_password):
+    __table__ = user_table
 
-        result = self.execute(self.select(UserTable).where(UserTable.c.username == username))
+    def check_password(self, raw_password):
+        return _make_password(self.username, raw_password) == self.password
 
-        if result:
-            pass
+    def set_password(self, raw_password):
+        self.password = _make_password(self.username, raw_password)
+
+    def update_password(self, oldpwd, newpwd):
+        if self.is_same_password(oldpwd):
+            self.set_password(newpwd)
+
+    def __str__(self):
+        return self.username or ""
 

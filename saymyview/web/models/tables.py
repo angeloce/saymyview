@@ -13,32 +13,29 @@ def create_table(name, *args, **kwargs):
     return Table(name, metadata, *tuple(args), **kwargs)
 
 
-UserTable = create_table('user',
-    Column('username', String(20)),
-    Column('nickname', String(20)),
+user_table = create_table('user',
+    Column('username', String(20), unique=True),
     Column('password', String(128)),
-    Column('wherefrom', Integer),
 )
 
 
-WebPageTable = create_table('web_page',
-    Column('url', String(255)),
+web_page_table = create_table('web_page',
+    Column('url', String(255), unique=True),
     Column('update_date', DateTime),
     Column('create_date', DateTime),
 )
 
 
-WebPageScriptTable = create_table('web_page_script',
-    Column('url', String(255)),
+web_page_script_table = create_table('web_page_script',
+    Column('url', String(255), unique=True),
     Column('script', Text),
     Column('update_date', DateTime),
 )
 
 
-RequestSessionTable = create_table('request_session',
-    Column('session_id', String(32)),
-    Column('session_data', Text),
+session_table = create_table('request_session',
+    Column('session_id', String(32), unique=True),
+    Column('session_data', Text, ),
     Column('expires', DateTime),
 )
-
 

@@ -11,6 +11,6 @@ from saymyview.web.models.base import DataBase
 
 application = tornado.web.Application(urls.patterns, **settings)
 application.database = DataBase(settings)
-
+from django.core.management.commands import shell
 
 

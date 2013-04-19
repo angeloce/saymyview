@@ -1,5 +1,8 @@
 #coding:utf-8
 
 
+from tables import *
 
-from dbmodel import *
+
+from user import User
+from session import Session
