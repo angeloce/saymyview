@@ -11,6 +11,7 @@ from saymyview.utils import date
 
 class RequestHandler(BaseRequestHandler):
     template_env = None
+    SESSIONID = "SESSIONID"
 
     def __init__(self, application, request, **kwargs):
         BaseRequestHandler.__init__(self, application, request, **kwargs)
@@ -19,14 +20,17 @@ class RequestHandler(BaseRequestHandler):
         if not self.template_env:
             self.template_env = Environment(loader=FileSystemLoader(convention.template_path))
 
-        session_id = self.get_cookie('session_id', None)
         self.session = None
+        session_id = self.get_cookie(self.SESSIONID)
         if session_id:
             self.session = Session.get_session(session_id)
 
     def finish(self, chunk=None):
-        if self.session and self.session.session_id != self.get_cookie('SESSIONID'):
-            self.set_cookie('SESSIONID', self.session.session_id)
+        session_id = self.get_cookie(self.SESSIONID)
+        if self.session and self.session.session_id != session_id:
+            self.set_cookie(self.SESSIONID, self.session.session_id)
+        elif session_id and self.session is None:
+            self.clear_cookie(self.SESSIONID)
         return super(RequestHandler, self).finish(chunk)
 
     def create_user_session(self, user):
@@ -56,3 +60,4 @@ class RequestHandler(BaseRequestHandler):
                 user = User.select().filter_by(username=user_name).first()
                 if not user:
                     self.session.set(user=None)
+                return user

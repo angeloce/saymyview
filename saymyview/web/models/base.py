@@ -43,7 +43,6 @@ class DataBase(object):
 
 
 class Model(object):
-
     session = session
 
     @classmethod
@@ -65,8 +64,8 @@ class Model(object):
         self.session.delete(self)
         self.session.commit()
 
-
 BaseModel = declarative_base(cls=Model)
+
 
 def make_engine_url(configs):
     db_engine = configs.get('db_engine', 'mysql')

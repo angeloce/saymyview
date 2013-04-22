@@ -17,8 +17,11 @@ from sqlalchemy import event
 
 
 
-s = Session.create_session('fffffff43ffffffff', {"df":3})
-print s.session_data
+s = Session.select().all()
+for i in s:
+    print i.session_data
+    i.set(user='222222222222')
+
 
 
 

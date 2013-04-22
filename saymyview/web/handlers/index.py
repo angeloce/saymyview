@@ -24,8 +24,6 @@ class LoginHandler(RequestHandler):
             if user and user.check_password(password):
                 session = self.create_user_session(user)
                 session.set(user=username)
-                print 'user', username
-                print session.session_data, session.session_dict
                 return self.redirect('/')
 
         # login error
@@ -36,7 +34,7 @@ class LogoutHandler(RequestHandler):
 
     def get(self):
         if self.session:
-            self.session.set(user=None)
+            self.session.delete()
         self.redirect('/')
 
     post = get
