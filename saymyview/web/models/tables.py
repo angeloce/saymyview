@@ -40,10 +40,11 @@ user_table = create_table('user',
 )
 
 
-web_page_table = create_table('web_page',
+web_link_table = create_table('web_link',
     Column('url', String(255), unique=True),
-    Column('update_date', DateTime),
-    Column('create_date', DateTime),
+    Column('short_description', String(255)),
+    Column('update_time', DateTime),
+    Column('create_time', DateTime),
 )
 
 
