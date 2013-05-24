@@ -1,5 +1,7 @@
 #coding:utf-8
 
+import json
+
 from tornado.web import RequestHandler as BaseRequestHandler
 from jinja2 import FileSystemLoader, Environment
 
@@ -61,3 +63,17 @@ class RequestHandler(BaseRequestHandler):
                 if not user:
                     self.session.set(user=None)
                 return user
+
+
+class JsonRequestHandler(RequestHandler):
+    def _echo_and_end(self, data):
+        self.set_header("Content-Type", "Application/json")
+        self.finish(json.dumps(data))
+
+    def echoerror(self, error):
+        if not isinstance(error, (tuple, list)) or len(error) != 2:
+            raise ValueError
+        self._echo_and_end({"result": error[0], "msg": error[1]})
+
+    def echodata(self, data):
+        self._echo_and_end({"result": 0, "data": data})

@@ -9,4 +9,8 @@ from saymyview.datamodel.user import User
 class EnrollHandler(RequestHandler):
 
     def post(self):
-        pass
+
+        if not self.current_user:
+            return
+
+        self.get_argument('link', '')

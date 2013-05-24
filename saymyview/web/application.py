@@ -4,9 +4,10 @@
 import tornado
 import tornado.web
 
+from saymyview.datamodel.base import DataBase
+
 from saymyview.web.conf import settings
 from saymyview.web import urls
-from saymyview.web.models.base import DataBase
 
 
 application = tornado.web.Application(urls.patterns, **settings)
