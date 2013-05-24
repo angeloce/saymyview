@@ -1,8 +1,8 @@
 #coding:utf-8
 
 
-from saymyview.web.models.base import BaseModel
-from saymyview.web.models.tables import user_table
+from saymyview.datamodel.base import BaseModel
+from saymyview.datamodel.tables import user_table
 
 
 def _make_password(username, password):
@@ -12,7 +12,6 @@ def _make_password(username, password):
     sh2 = hashlib.sha256(sh1.hexdigest())
     sh2.update(username)
     return sh2.hexdigest()
-
 
 
 class User(BaseModel):

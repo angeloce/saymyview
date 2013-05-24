@@ -2,8 +2,8 @@
 
 
 from saymyview.utils import date
-from saymyview.web.models.base import BaseModel
-from saymyview.web.models.tables import session_table
+from saymyview.datamodel.base import BaseModel
+from saymyview.datamodel.tables import session_table
 
 
 class Session(BaseModel):

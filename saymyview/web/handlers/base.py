@@ -4,7 +4,7 @@ from tornado.web import RequestHandler as BaseRequestHandler
 from jinja2 import FileSystemLoader, Environment
 
 from saymyview.web.conf import convention
-from saymyview.web.models import User, Session
+from saymyview.datamodel import User, Session
 
 from saymyview.utils import date
 

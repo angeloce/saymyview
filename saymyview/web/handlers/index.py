@@ -2,7 +2,7 @@
 
 
 from saymyview.web.handlers.base import RequestHandler
-from saymyview.web.models.user import User
+from saymyview.datamodel.user import User
 
 
 class IndexHandler(RequestHandler):
