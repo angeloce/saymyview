@@ -1,7 +1,7 @@
 #coding:utf-8
 
 from saymyview.web.handlers.base import JsonRequestHandler
-from saymyview.datamodel.weblink import WebLink
+from saymyview.datamodel.weburl import WebLink
 
 class EnrollWebLink(JsonRequestHandler):
     ST_URL_REQUIRED = ("-101", "url is required")

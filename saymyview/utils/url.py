@@ -4,7 +4,7 @@
 class UrlHandlers(object):
     def __init__(self, handler_prefix="", patterns=None):
         self.handler_prefix = handler_prefix
-        self.patterns = patterns
+        self.patterns = patterns or []
 
     def __iter__(self):
         handler_prefix = self.handler_prefix.strip()

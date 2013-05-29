@@ -3,7 +3,11 @@
 {%block content%}
 
        <div class="container_12">
-           233
+           <form action="/enroll_link" method="post">
+               <label>Url:<input type="text" name="url" /></label>
+               <label>short_description:<input type="text" name="short" /></label>
+               <input type="submit" />
+           </form>
        </div>
 
 {%endblock%}

@@ -3,7 +3,3 @@
 
 from tables import *
 
-
-from user import User
-from session import Session
-from weblink import WebLink

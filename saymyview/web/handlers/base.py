@@ -6,7 +6,8 @@ from tornado.web import RequestHandler as BaseRequestHandler
 from jinja2 import FileSystemLoader, Environment
 
 from saymyview.web.conf import convention
-from saymyview.datamodel import User, Session
+from saymyview.datamodel.user import User
+from saymyview.datamodel.session import Session
 
 from saymyview.utils import date
 
@@ -77,3 +78,4 @@ class JsonRequestHandler(RequestHandler):
 
     def echodata(self, data):
         self._echo_and_end({"result": 0, "data": data})
+
