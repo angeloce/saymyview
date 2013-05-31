@@ -1,0 +1,9 @@
+body {
+    background-image: url(/static/img/subtle_white_feathers.png);
+    max-width: 980px;
+    margin: 0 auto;
+}
+
+body.care-top{
+    padding-top: 60px;
+}

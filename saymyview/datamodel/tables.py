@@ -40,22 +40,23 @@ user_table = create_table('user',
 )
 
 
-web_url_table = create_table('web_link',
+web_url_table = create_table('web_url',
     Column('url', String(255), unique=True),
+    Column('name', String(255), nullable=False),
     Column('short_description', String(255)),
     Column('update_time', DateTime),
-    Column('create_time', DateTime),
+    Column('create_time', TIMESTAMP),
 )
 
-web_url_like_table = create_table('web_url_like',
-    Column('user_id', Integer),
-    Column('url_id', Integer),
-)
-
-web_url_table = create_table('web_url_like',
-    Column('user_id', Integer),
-    Column('url_id', Integer),
-)
+# web_url_like_table = create_table('web_url_like',
+#     Column('user_id', Integer),
+#     Column('url_id', Integer),
+# )
+#
+# web_url_table = create_table('web_url_like',
+#     Column('user_id', Integer),
+#     Column('url_id', Integer),
+# )
 
 
 web_page_script_table = create_table('web_page_script',

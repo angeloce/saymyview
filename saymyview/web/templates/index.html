@@ -2,12 +2,30 @@
 
 {%block content%}
 
-       <div class="container_12">
-           <form action="/enroll_link" method="post">
-               <label>Url:<input type="text" name="url" /></label>
-               <label>short_description:<input type="text" name="short" /></label>
-               <input type="submit" />
-           </form>
+       <div class="container-fluid">
+           <div class="row-fluid">
+               <div class="span9">
+                   <ul class="thumbnails">
+
+                {% for weburl in weburls %}
+                   <li class="span3">
+                       <div class="thumbnail">
+                           <img alt="" src="http://t2.qpic.cn/mblogpic/a34b3c68021b64b5c460/460">
+                           <h3><a href="/url/{{weburl.id}}">{{weburl.name}}</a></h3>
+                           <p>{{weburl.short_description}}</p>
+                       </div>
+                  </li>
+
+               {% endfor %}
+                </ul>
+               </div>
+               <div class="span3">
+                   {% include "sidebar.html" %}
+               </div>
+
+
+           </div>
+
        </div>
 
 {%endblock%}

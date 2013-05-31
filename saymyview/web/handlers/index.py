@@ -3,12 +3,15 @@
 
 from saymyview.web.handlers.base import RequestHandler
 from saymyview.datamodel.user import User
-
+from saymyview.datamodel.weburl import WebUrl
 
 class IndexHandler(RequestHandler):
 
     def get(self):
-        self.render('index.html')
+
+        weburls = WebUrl.select().all()[:10]
+
+        self.render('index.html', weburls=weburls)
 
 
 class LoginHandler(RequestHandler):

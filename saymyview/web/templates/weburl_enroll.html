@@ -1,0 +1,38 @@
+{%extends "layout.html" %}
+
+{%block content%}
+
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12">
+                <form class="form-horizontal" action="/url/add" method="post">
+                    <div class="control-group">
+                        <label class="control-label">名称</label>
+                        <div class="controls">
+                            <input type="text" name="name" class="input-xlarge" />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">网址</label>
+                        <div class="controls">
+                            <input type="text" name="url" class="input-xlarge" />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">简介</label>
+                        <div class="controls">
+                            <textarea name="short" rows="3" class="input-xlarge"></textarea>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="controls">
+                            <input type="submit" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{%endblock%}
+

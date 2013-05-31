@@ -4,13 +4,15 @@
         {%block head%}
         <meta charset='UTF-8' />
         <title> {%block title%}Say My View{%endblock%}</title>
-        <link href="/static/css/reset.css" rel="stylesheet" />
-        <link href="/static/css/960.css" rel="stylesheet" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="/static/css/bootstrap-responsive.min.css" rel="stylesheet" />
+        <link href="/static/css/saymyview.css" rel="stylesheet" />
         {%include "third_scripts.html" %}
         {%block extra_head%}{%endblock%}
         {%endblock%}
     </head>
-    <body>
+    <body class="care-top">
         {%block body%}
             {%block header%}
                 {%include "header.html"%}

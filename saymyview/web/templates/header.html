@@ -1,10 +1,15 @@
-<div class="container_12">
-    <div style="margin-top:40px;">
-        {% if current_user %}
-        <span id="logout"><a href="/logout">注销</a>, {{current_user}}</span>
-        {% else %}
-        <span id="login"><a href="/login">登录</a></span>
-        {% endif %}
+<div class="container-fluid">
+    <div id="navbar" class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <a class="brand" href="/">首页</a>
+            <p class="pull-right">
+                {% if current_user %}
+                <a id="logout" href="/logout">注销</a>
+                {% else %}
+                <a id="login" href="/login">登录</a>
+                {% endif %}
+            </p>
+        </div>
     </div>
 </div>
 
