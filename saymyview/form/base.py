@@ -1,19 +1,120 @@
+#coding:utf-8
 
 import re
 from tornado.escape import to_unicode
 from tornado.options import options
+from validators import ValidateError, Required
 
 __all__ = ['BaseForm', 'FormMeta', 'TornadoForm']
 
 
 
-class BaseField(object):
-    pass
+
+
+class Field(object):
+    def __init__(self, label=None, validators=None, name=None, filters=tuple(),
+                 optional=False, default=None):
+        self.name = name
+        self.label = label or name
+        if validators is None:
+            validators = []
+        self.validators = validators
+        self.filters = filters
+        self.type = type(self).__name__
+        self.default = default
+        self.raw_data = None
+        self.optional = optional
+        self.errors = []
+        self._has_validated = False
+
+    def validate(self, form):
+
+        if self._has_validated:
+            return self.errors
+
+        if not self.optional:
+            for validator in self.validators:
+                if isinstance(validator, Required):
+                    break
+            else:
+                self.validators.insert(0, Required())
+
+        # Run validators
+        for validator in self.validators:
+            try:
+                validator(self, form.raw_data)
+            except ValidateError, err:
+                self.errors.append(err.message)
+                if err.stopped:
+                    break
+
+        return len(self.errors) == 0
+
+    def process(self, formdata, data):
+        """
+        Process incoming data, calling process_data, process_formdata as needed,
+        and run filters.
+
+        If `data` is not provided, process_data will be called on the field's
+        default.
+
+        Field subclasses usually won't override this, instead overriding the
+        process_formdata and process_data methods. Only override this for
+        special advanced processing, such as when a field encapsulates many
+        inputs.
+        """
+        self.process_errors = []
+        try:
+            self.process_data(data)
+        except ValueError as e:
+            self.process_errors.append(e.args[0])
+
+        # logical fix. obj is the default value
+        if formdata and self.name in formdata:
+            try:
+                self.raw_data = formdata.getlist(self.name)
+                self.process_formdata(self.raw_data)
+            except ValueError as e:
+                self.process_errors.append(e.args[0])
+
+        for _filter in self.filters:
+            try:
+                self.data = _filter(self.data)
+            except ValueError as e:
+                self.process_errors.append(e.args[0])
+
+    def process_data(self, value):
+        """
+        Process the Python data applied to this field and store the result.
+
+        This will be called during form construction by the form's `kwargs` or
+        `obj` argument.
+
+        :param value: The python object containing the value to process.
+        """
+        self.data = value
+
+    def process_formdata(self, valuelist):
+        """
+        Process data received over the wire from a form.
+
+        This will be called during form construction with data supplied
+        through the `formdata` argument.
+
+        :param valuelist: A list of strings to process.
+        """
+        if valuelist:
+            self.data = to_unicode(valuelist[0])
+        else:
+            self.data = to_unicode(None)
+
+
 
 
 
 class BaseForm(object):
     pass
+
 
 class MetaForm(type):
     """
@@ -29,24 +130,29 @@ class MetaForm(type):
     instances are ignored by the metaclass.
     """
 
-
     def __new__(cls, name, bases, attrs):
         fields = {}
-        for name in attrs:
-            if not name.startswith('__') and isinstance(attrs[name], BaseField):
-                field = attrs[name]
-                field.name = name
-                fields[name] = field
+        if "_fields" in attrs:
+            fields.update(attrs["_fields"])
+
+        found_fields = [(name, attr) for name, attr in attrs.items()
+                        if not name.startswith('__') and isinstance(attr, Field)]
+
+        for name, field in found_fields:
+            field = attrs[name]
+            field.name = name
+            fields[name] = field
+            del attrs[name]
+
         attrs["_fields"] = fields
         return type.__new__(cls, name, bases, attrs)
 
 
-class Form(BaseForm):
+class Form(object):
     __metaclass__ = MetaForm
 
     def __init__(self, data=None):
         self._data = data or {}
-        self._errors = None
 
     def process(self, formdata=None, obj=None, **kwargs):
         """
@@ -75,29 +181,44 @@ class Form(BaseForm):
             else:
                 field.process(formdata)
 
-    def validate(self, extra_validators=None):
-        print self._fields
+    def validate(self):
         is_ok = True
         for name, field in self._fields.items():
-            if name not in self._data:
-                if not field.optional:
-                    is_ok = False
-                    raise
-            else:
-                if not field.validate(self, self._data[name]):
-                    is_ok = False
+            if not field.validate(self):
+                is_ok = False
         return is_ok
 
     @property
     def data(self):
-        return dict((name, f.data) for name, f in self._fields.iteritems())
+        return {name: field.data for name, field in self._fields.items()}
+
+    @property
+    def raw_data(self):
+        return self._data
 
     @property
     def errors(self):
-        if self._errors is None:
-            self._errors = dict((name, f.errors) for name, f in self._fields.iteritems() if f.errors)
+        if not hasattr(self, "_errors"):
+            self._errors = {name: field.errors for name, field in self._fields.items() if field.errors}
         return self._errors
 
+
+class MetaModelForm(MetaForm):
+    def __new__(cls, name, bases, attrs):
+        if "model" not in attrs:
+            raise ValueError(u"ModelForm need one juti model")
+        model = attrs["model"]
+
+        return MetaForm.__new__(cls, name, bases, attrs)
+
+
+class ModelForm(Form):
+    def __init__(self, data, instance=None):
+        Form.__init__(self, data)
+        self.instance = instance
+
+    def save(self):
+        pass
 
 
 class _TornadoArgumentsWrapper(dict):

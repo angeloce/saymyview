@@ -1,4 +1,8 @@
+#coding:utf-8
+
+
 import re
+
 
 __all__ = (
     'Email', 'email', 'EqualTo', 'equal_to', 'IPAddress', 'ip_address',
@@ -6,28 +10,34 @@ __all__ = (
     'URL', 'url', 'AnyOf', 'any_of', 'NoneOf', 'none_of'
 )
 
+class Validator(object):
+    def __call__(self, field, data):
+        self.validate(field, data)
 
-class ValidationError(ValueError):
-    """
-    Raised when a validator fails to validate its input.
-    """
-    def __init__(self, message='', *args, **kwargs):
-        ValueError.__init__(self, message, *args, **kwargs)
+    def validate(self, field, data):
+        pass
 
+class ValidateError(Exception):
+    def __init__(self, message, stop=False):
+        self.stopped = stop
+        self.message = message
 
-class StopValidation(Exception):
-    """
-    Causes the validation chain to stop.
-
-    If StopValidation is raised, no more validators in the validation chain are
-    called. If raised with a message, the message will be added to the errors
-    list.
-    """
-    def __init__(self, message='', *args, **kwargs):
-        Exception.__init__(self, message, *args, **kwargs)
+    def __str__(self):
+        return self.message
+    __unicode__ = __str__
 
 
-class EqualTo(object):
+class Required(Validator):
+    def __init__(self, message=None):
+        pass
+
+    def validate(self, field, data):
+        if field.name not in data:
+            raise ValidateError(u"%s是一个必填项" % field.label, stop=True)
+
+
+
+class EqualTo(Validator):
     """
     Compares the values of two fields.
 
@@ -42,9 +52,9 @@ class EqualTo(object):
         self.fieldname = fieldname
         self.message = message
 
-    def __call__(self, form, field):
+    def validate(self, data):
         try:
-            other = form[self.fieldname]
+            other = data[self.fieldname]
         except KeyError:
             raise ValidationError(field.translate("Invalid field name '%s'.") % self.fieldname)
         if field.data != other.data:
@@ -136,29 +146,6 @@ class NumberRange(object):
                     self.message = field.translate('Number must be between %(min)s and %(max)s.')
 
             raise ValidationError(self.message % dict(min=self.min, max=self.max))
-
-
-class Required(object):
-    """
-    Validates that the field contains data. This validator will stop the
-    validation chain on error.
-
-    :param message:
-        Error message to raise in case of a validation error.
-    """
-    field_flag = 'required'
-
-    def __init__(self, message=None):
-        self.message = message
-
-    def __call__(self, form, field):
-        if (not isinstance(field.data, int) and not field.data) or \
-           isinstance(field.data, basestring) and not field.data.strip():
-            if self.message is None:
-                self.message = field.translate(u'This field is required.')
-
-            field.errors[:] = []
-            raise StopValidation(self.message)
 
 
 class Regexp(object):
