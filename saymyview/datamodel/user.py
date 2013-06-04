@@ -1,5 +1,6 @@
 #coding:utf-8
 
+from sqlalchemy.orm import validates
 
 from saymyview.datamodel.base import BaseModel
 from saymyview.datamodel.tables import user_table
@@ -14,18 +15,25 @@ def _make_password(username, password):
     return sh2.hexdigest()
 
 
-class User(BaseModel):
+class UserModel(BaseModel):
     __table__ = user_table
 
     def check_password(self, raw_password):
         return _make_password(self.username, raw_password) == self.password
 
-    def set_password(self, raw_password):
-        self.password = _make_password(self.username, raw_password)
-
     def update_password(self, oldpwd, newpwd):
         if self.is_same_password(oldpwd):
-            self.set_password(newpwd)
+            self.password = newpwd
+
+    @validates("password")
+    def validate_password(self, key, value):
+        return _make_password(self.username, value)
+
+    @validates("username")
+    def validate_name(self, key, value):
+        if len(value) < 3 or len(value) > 30:
+            raise
+        return value
 
     def __str__(self):
         return self.username or ""

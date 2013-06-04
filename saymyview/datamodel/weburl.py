@@ -1,16 +1,15 @@
 #coding:utf-8
 
-from sqlalchemy import event
 from sqlalchemy.orm import validates
 
 from saymyview.datamodel.base import BaseModel
 from saymyview.datamodel.tables import web_url_table
 
 
-class WebUrl(BaseModel):
+class WebUrlModel(BaseModel):
     __table__ = web_url_table
 
-    @validates('url')
+    @validates("url")
     def validate_url(self, key, url):
         return url
 

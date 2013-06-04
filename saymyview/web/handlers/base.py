@@ -1,12 +1,13 @@
 #coding:utf-8
 
 import json
+import re
 
 from tornado.web import RequestHandler as BaseRequestHandler
 from jinja2 import FileSystemLoader, Environment
 
 from saymyview.web.conf import convention
-from saymyview.datamodel.user import User
+from saymyview.web.models.user import User
 from saymyview.datamodel.session import Session
 
 from saymyview.utils import date
@@ -60,10 +61,19 @@ class RequestHandler(BaseRequestHandler):
         if self.session:
             user_name = self.session.get('user')
             if user_name:
-                user = User.select().filter_by(username=user_name).first()
+                user = User.get_user_by_name(user_name)
                 if not user:
                     self.session.set(user=None)
                 return user
+
+    def get_query_arguments(self, mul=False):
+        arguments = {}
+        for k in self.request.arguments:
+            v = self.get_arguments(k)
+            if mul is False or len(v) == 1:
+                v = v[0]
+            arguments[k] = v
+        return arguments
 
 
 class JsonRequestHandler(RequestHandler):

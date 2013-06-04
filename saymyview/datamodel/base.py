@@ -45,13 +45,22 @@ class DataBase(object):
 class Model(object):
     session = session
 
+    class ValidateError(ValueError):
+        pass
+
+    def set_fields(self, **data):
+        keys = self.__table__.columns.keys()
+        for k, v in data.items():
+            if k in keys and v is not None:
+                setattr(self, k, v)
+        return self
+
     @classmethod
     def select(cls):
         return cls.session.query(cls)
 
     def update(self, **kwargs):
-        for name, value in kwargs.items():
-            setattr(self, name, value)
+        self.set_fields(**kwargs)
         self.session.commit()
         return self
 

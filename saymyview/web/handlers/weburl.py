@@ -2,7 +2,7 @@
 
 
 from saymyview.web.handlers.base import RequestHandler
-from saymyview.datamodel.weburl import WebUrl
+from saymyview.web.models.weburl import WebUrl
 
 
 class EnrollHandler(RequestHandler):
@@ -14,9 +14,9 @@ class EnrollHandler(RequestHandler):
     def post(self):
         name = self.get_argument("name")
         url = self.get_argument("url")
-        short_description = self.get_argument("short")
 
-        weburl = WebUrl(name=name, url=url, short_description=short_description).insert()
+        arguments = self.get_query_arguments()
+        weburl = WebUrl.add_url(name, url, **arguments)
 
         return self.redirect('/url/%d' % weburl.id)
 

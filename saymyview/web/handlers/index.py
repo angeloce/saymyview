@@ -2,15 +2,13 @@
 
 
 from saymyview.web.handlers.base import RequestHandler
-from saymyview.datamodel.user import User
-from saymyview.datamodel.weburl import WebUrl
+from saymyview.web.models.user import User
+from saymyview.web.models.weburl import WebUrl
 
 class IndexHandler(RequestHandler):
 
     def get(self):
-
-        weburls = WebUrl.select().all()[:10]
-
+        weburls = WebUrl.get_urls()
         self.render('index.html', weburls=weburls)
 
 
@@ -20,14 +18,13 @@ class LoginHandler(RequestHandler):
         self.render('login.html')
 
     def post(self):
-        username = self.get_argument('u', '')
+        username = self.get_argument('u', None)
         password = self.get_argument('p', '')
-        if username:
-            user = User.select().filter_by(username=username).first()
-            if user and user.check_password(password):
-                session = self.create_user_session(user)
-                session.set(user=username)
-                return self.redirect('/')
+        user = User.login(username, password)
+        if user:
+            session = self.create_user_session(user)
+            session.set(user=username)
+            return self.redirect('/')
 
         # login error
         self.render('login.html', error_message=u"用户名或密码错误", username=username, password=password)
