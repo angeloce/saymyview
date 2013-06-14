@@ -1,0 +1,47 @@
+{%extends "layout.html" %}
+
+{%block extra_head%}
+    <script type="text/javascript" src="/static/js/ace/ace.js"></script>
+    <!--<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/ace/0.2.0/theme-clouds.js"></script>-->
+        <!--<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/ace/0.2.0/mode-python.js"></script>-->
+
+    <script type="text/javascript">
+        $(function(){
+            var editor = ace.edit('script_editor');
+            editor.setTheme("ace/theme/monokai");
+            editor.getSession().setMode("ace/mode/python");
+        })
+    </script>
+    <style type="text/css">
+    #script_editor {
+        position: relative;
+        height: 600px;
+
+    }
+</style>
+{%endblock%}
+
+{%block content%}
+
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <h3><a href="/url/{{weburl.id}}">{{weburl.name}}</a></h3>
+
+            <div class="span12">
+                <form method="post">
+                    <input type="submit" class="btn btn-primary" />
+                </form>
+            </div>
+
+            <div class="span12">
+                <div id="script_editor"></div>
+            </div>
+
+
+
+        </div>
+
+    </div>
+
+{%endblock%}
+

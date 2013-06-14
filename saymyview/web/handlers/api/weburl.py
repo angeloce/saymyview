@@ -1,7 +1,7 @@
 #coding:utf-8
 
 from saymyview.web.handlers.base import JsonRequestHandler
-from saymyview.datamodel.weburl import WebUrl
+from saymyview.web.models.weburl import WebUrl
 
 
 class EnrollHandler(JsonRequestHandler):
@@ -15,7 +15,7 @@ class EnrollHandler(JsonRequestHandler):
         if not url:
             return self.echoerror(self.ST_URL_REQUIRED)
 
-        weburl = WebUrl(url=url, short_description=short_description).insert()
+        weburl = WebUrl.add_url(url=url, short_description=short_description)
 
         return self.echodata(dict(weburl))
 
@@ -30,7 +30,7 @@ class UpdateHandler(JsonRequestHandler):
         url = self.get_argument("url", None)
         short_description = self.get_argument("short", None)
 
-        weburl = WebUrl.select().filter_by(id=weburl_id).first()
+        weburl = WebUrl.get_by_id(weburl_id)
 
         if name is not None:
             weburl.name = name

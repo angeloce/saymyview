@@ -8,7 +8,7 @@ from saymyview.web.models.weburl import WebUrl
 class IndexHandler(RequestHandler):
 
     def get(self):
-        weburls = WebUrl.get_urls()
+        weburls = WebUrl.get_urls(end=10)
         self.render('index.html', weburls=weburls)
 
 

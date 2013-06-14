@@ -2,6 +2,7 @@
 
 import json
 import copy
+import datetime
 
 from sqlalchemy import types
 from sqlalchemy import *
@@ -45,7 +46,7 @@ web_url_table = create_table('web_url',
     Column('name', String(255), nullable=False),
     Column('short_description', String(255)),
     Column('update_time', DateTime),
-    Column('create_time', TIMESTAMP),
+    Column('create_time', DateTime),
 )
 
 # web_url_like_table = create_table('web_url_like',
@@ -59,10 +60,10 @@ web_url_table = create_table('web_url',
 # )
 
 
-web_page_script_table = create_table('web_page_script',
+web_url_script_table = create_table('web_url_script',
     Column('url', String(255), unique=True),
     Column('script', Text),
-    Column('update_date', DateTime),
+    Column('update_time', DateTime, onupdate=datetime.datetime.now),
 )
 
 

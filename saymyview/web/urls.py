@@ -12,7 +12,9 @@ patterns = UrlHandlers("saymyview.web.handlers",
         (r'/login', 'index.LoginHandler'),
         (r'/logout', 'index.LogoutHandler'),
         (r'/url/add', 'weburl.EnrollHandler'),
-        (r'/url/(?P<id>\d+)|/url/(?P<url>\w+)', 'weburl.DetailHandler'),
+
+        (r'/url/(\d+)', 'weburl.DetailHandler'),
+        (r'/url/(\d+)/script', 'weburl.ScriptHandler'),
         (r'/api', api_urls.patterns),
     ]
 )

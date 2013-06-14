@@ -3,17 +3,23 @@
 
 from saymyview.datamodel.weburl import WebUrlModel
 
+from _base import Model
 
-class WebUrl(object):
 
-    @classmethod
-    def add_url(cls, name, url, **kwargs):
+class WebUrl(Model):
 
+    def add_url(self, name, url, kwargs):
         weburl = WebUrlModel()
         kwargs["name"] = name
         kwargs["url"] = url
         weburl.set_fields(**kwargs)
         return weburl.insert()
+
+    def get_by_id(self, url_id):
+        return WebUrlModel.select().filter_by(id=url_id).one()
+
+    def get_by_url(self, url):
+        return WebUrlModel.select().filter_by(url=url).one()
 
     def get_urls(self, start=None, end=None):
         if start is None and end is None:
